@@ -1,12 +1,13 @@
-﻿using System;
-
-namespace BucketGame.Core
+﻿namespace BucketGame.Core
 {
-    class Program
+    using System;
+    using BucketGame.Models;
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            OilBarrel container = new OilBarrel(20);
         }
     }
 }
