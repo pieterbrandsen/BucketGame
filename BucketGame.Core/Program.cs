@@ -6,8 +6,7 @@
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            OilBarrel container = new OilBarrel(12);
+            OilBarrel container = new OilBarrel(50);
             Bucket container2 = new Bucket(11, 12);
             container2.Full += ContainerEvents.Full;
             container2.CapacityOverflowing += ContainerEvents.CapacityOverflowing;
