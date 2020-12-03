@@ -17,4 +17,11 @@
         public const int OilBarrelCap = 159;
     }
 
+    public enum ContainerTypes
+    {
+        Bucket,
+        RainBarrel,
+        OilBarrel
+    }
+
 }

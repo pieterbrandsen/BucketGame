@@ -1,10 +1,13 @@
-﻿namespace BucketGame.Models
+﻿using System;
+using System.Diagnostics;
+using BucketGame.Constants;
+using static BucketGame.Constants.Bucket;
+using static BucketGame.Constants.OilBarrel;
+using static BucketGame.Constants.RainBarrel;
+using static BucketGame.Models.ContainerEvents;
+
+namespace BucketGame.Models
 {
-    using System;
-    using System.Diagnostics;
-    using static BucketGame.Constants.Bucket;
-    using static BucketGame.Constants.RainBarrel;
-    using static BucketGame.Constants.OilBarrel;
     public abstract class Container
     {
         #region Constructors
@@ -56,11 +59,19 @@
                 // While newContent has values to add to content, continue
                 content++;
                 newContent--;
-                // If bucket has not yet started overflowing and content is higher then Capacity
-                if (!bucketIsOverflowing && Content > Capacity)
+
+                // If this bucket is full
+                if (Content == Capacity)
+                {
+                    OnFull(new ContainerEventArgs() { ContainerType = Enum.Parse<ContainerTypes>(GetType().Name) });
+                }
+
+                // If Content is higher then Capacity
+                else if (Content > Capacity)
                 {
                     // Start capacity overflowing
-                    overflowedAmount += OnCapacityOverflowing(EventArgs.Empty);
+                    overflowedAmount += 1;
+                    OnCapacityOverflowing(new CapacityOverflowingEventArgs() { DebugMessageSend = bucketIsOverflowing, ContainerType = Enum.Parse<ContainerTypes>(GetType().Name) });
                     bucketIsOverflowing = true;
                 }
             }
@@ -68,19 +79,24 @@
             if (bucketIsOverflowing)
             {
                 // Finish overflowing
-                OnCapacityOverflowed(EventArgs.Empty, overflowedAmount);
+                OnCapacityOverflowed(new CapacityOverflowedEventArgs() { LostAmount = overflowedAmount, ContainerType = Enum.Parse<ContainerTypes>(GetType().Name) });
             }
         }
 
         public void AddContent(Container bucket)
         {
+            // Loop until the other bucket is empty or this bucket is full
             while (bucket.Content > 0 && Content < Capacity)
             {
                 AddContent(1);
                 bucket.RemoveContent(1);
             }
 
-            Debug.WriteLineIf(bucket.Content > 0 && Content >= Capacity, "Stopped filling bucket because it would have overflowed otherwise");
+            if (bucket.Content > 0 && Content >= Capacity)
+            {
+                OnFull(new ContainerEventArgs() { ContainerType = Enum.Parse<ContainerTypes>(GetType().Name) });
+                Debug.WriteLine("Stopped filling bucket because it would have overflowed otherwise");
+            }
         }
 
         public void RemoveContent(int removeContent) => content -= removeContent;
@@ -99,6 +115,13 @@
 
         public void Fill(Container container)
         {
+            // If this is not a bucket but the other container is a bucket
+            if (!(this is Bucket) && container is Bucket)
+            {
+                Debug.WriteLine("Cant fill a bucket with another type of container then a bucket");
+                return;
+            }
+
             // Fill this bucket using another bucket
             AddContent(container.Content);
             // Afterwards remove old content
@@ -106,71 +129,94 @@
         }
         #endregion
         #region Capacity
-        private void OverwriteCapacity(int capacity)
+        private void OverwriteCapacity(int newCapacity)
         {
-            // If capacity is higher then minCap and lower then maxCap
-            if (capacity >= BucketMinCap && capacity <= BucketMaxCap)
+            // Check if Container is wrong size
+            // If this is the case, throw a ArgumentOutOfRangeException
+            bool isBucketWrongSize = this is Bucket && (newCapacity < BucketMinCap || newCapacity > BucketMaxCap);
+            bool isRainBarrelWrongSize = this is RainBarrel && newCapacity != RainBarrelSmall && newCapacity != RainBarrelMedium && newCapacity != RainBarrelLarge;
+            bool isOilBarrelWrongSize = this is OilBarrel && newCapacity != OilBarrelCap;
+            if (isBucketWrongSize || isRainBarrelWrongSize || isOilBarrelWrongSize)
             {
-                Capacity = capacity;
-            }
-            else
-            {
-                // Capacity inputted was higher or lower then allowed
+                // Capacity is not right size, please try again.
                 throw new ArgumentOutOfRangeException();
             }
+
+            capacity = newCapacity;
         }
         #endregion
         #endregion
 
-        #region Events
+        #region ContainerEvents
 
-        public event EventHandler Full;
+        public event EventHandler<ContainerEventArgs> Full;
 
-        protected void OnFull(EventArgs e)
+        protected void OnFull(ContainerEventArgs e)
         {
-            // Create new event handler
-            EventHandler handler = Full;
-            if (handler != null)
-            {
-                Debug.WriteLine($"A bucket is full, please empty that bucket before it overflows");
-                handler(this, e);
-            }
+            Full?.Invoke(this, e);
         }
 
-        public event EventHandler CapacityOverflowing;
+        public event EventHandler<CapacityOverflowingEventArgs> CapacityOverflowing;
 
-        protected int OnCapacityOverflowing(EventArgs e)
+        protected void OnCapacityOverflowing(CapacityOverflowingEventArgs e)
         {
-            // Create new event handler
-            EventHandler handler = CapacityOverflowing;
-
-            if (handler != null)
-            {
-                RemoveContent(1);
-                Debug.WriteLine($"A bucket is overflowing");
-                handler(this, e);
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            CapacityOverflowing?.Invoke(this, e);
         }
 
-        public event EventHandler CapacityOverflowed;
+        public event EventHandler<CapacityOverflowedEventArgs> CapacityOverflowed;
 
-        protected void OnCapacityOverflowed(EventArgs e, int lostContent)
+        protected void OnCapacityOverflowed(CapacityOverflowedEventArgs e)
         {
-            // Create new event handler
-            EventHandler handler = CapacityOverflowed;
-
-            if (handler != null)
-            {
-                Debug.WriteLine($"A bucket overflowed and lost {lostContent} from a bucket");
-                handler(this, e);
-            }
+            CapacityOverflowed?.Invoke(this, e);
         }
 
         #endregion
+    }
+
+    public class ContainerEvents
+    {
+        public class ContainerEventArgs : EventArgs
+        {
+            public ContainerTypes ContainerType { get; set; }
+        }
+
+        public class CapacityOverflowingEventArgs : ContainerEventArgs
+        {
+            public bool DebugMessageSend { get; set; }
+        }
+
+        public class CapacityOverflowedEventArgs : ContainerEventArgs
+        {
+            public int LostAmount { get; set; }
+        }
+
+        public static void Full(object sender, ContainerEventArgs e)
+        {
+            Debug.WriteLine($"A {e.ContainerType} is full, please empty that bucket before it overflows");
+        }
+
+        public static void CapacityOverflowing(object sender, CapacityOverflowingEventArgs e)
+        {
+            try
+            {
+                Container container = sender as Container;
+                container?.RemoveContent(1);
+                // Notify that bucket is overflowing
+                if (!e.DebugMessageSend)
+                {
+                    Debug.WriteLine($"A {e.ContainerType} is overflowing");
+                }
+            }
+            catch (NullReferenceException exception)
+            {
+                Debug.WriteLine(exception);
+                throw;
+            }
+        }
+
+        public static void CapacityOverflowed(object sender, CapacityOverflowedEventArgs e)
+        {
+            Debug.WriteLine($"A {e.ContainerType} overflowed and lost {e.LostAmount} content");
+        }
     }
 }
