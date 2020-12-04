@@ -15,7 +15,7 @@ jobs:
               command: dotnet.exe restore
           - run:
               name: "Run Application Tests"
-              command: dotnet.exe test -v n --results-directory:test_coverage --collect:"Code Coverage"
+              command: dotnet.exe test -v n --results-directory:test_coverage --collect:"XPlat Code Coverage"
           - run:
               name: "Print Working Directory"
               command: pwd
