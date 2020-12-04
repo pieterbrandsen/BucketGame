@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using BucketGame.Constants;
 using static BucketGame.Constants.Bucket;
+using static BucketGame.Constants.ContainerTypes;
 using static BucketGame.Constants.OilBarrel;
 using static BucketGame.Constants.RainBarrel;
 using static BucketGame.Models.ContainerEvents;
@@ -63,7 +63,7 @@ namespace BucketGame.Models
                 // If this bucket is full
                 if (Content == Capacity)
                 {
-                    OnFull(new ContainerEventArgs { ContainerType = Enum.Parse<ContainerTypes>(GetType().Name) });
+                    OnFull(new ContainerEventArgs { ContainerType = Enum.Parse<ConTypes>(GetType().Name) });
                 }
 
                 // If Content is higher then Capacity
@@ -71,7 +71,7 @@ namespace BucketGame.Models
                 {
                     // Start capacity overflowing
                     overflowedAmount += 1;
-                    OnCapacityOverflowing(new CapacityOverflowingEventArgs { DebugMessageSend = bucketIsOverflowing, ContainerType = Enum.Parse<ContainerTypes>(GetType().Name) });
+                    OnCapacityOverflowing(new CapacityOverflowingEventArgs { DebugMessageSend = bucketIsOverflowing, ContainerType = Enum.Parse<ConTypes>(GetType().Name) });
                     bucketIsOverflowing = true;
                 }
             }
@@ -79,11 +79,11 @@ namespace BucketGame.Models
             if (bucketIsOverflowing)
             {
                 // Finish overflowing
-                OnCapacityOverflowed(new CapacityOverflowedEventArgs { LostAmount = overflowedAmount, ContainerType = Enum.Parse<ContainerTypes>(GetType().Name) });
+                OnCapacityOverflowed(new CapacityOverflowedEventArgs { LostAmount = overflowedAmount, ContainerType = Enum.Parse<ConTypes>(GetType().Name) });
             }
             else if (Content > Capacity * 0.9 && Content < Capacity)
             {
-                Debug.WriteLine($"A {Enum.Parse<ContainerTypes>(GetType().Name)} is almost at capacity because its {Content * 100 / Capacity * 100 / 100}% full, there is {Capacity - Content} capacity free");
+                Debug.WriteLine($"A {Enum.Parse<ConTypes>(GetType().Name)} is almost at capacity because its {Content * 100 / Capacity * 100 / 100}% full, there is {Capacity - Content} capacity free");
             }
         }
 
@@ -102,7 +102,7 @@ namespace BucketGame.Models
             }
             else if (Content > Capacity * 0.9 && Content < Capacity)
             {
-                Debug.WriteLine($"A {Enum.Parse<ContainerTypes>(GetType().Name)} is almost at capacity because its {Content / Capacity * 100}% full, there is {Capacity - Content} capacity free");
+                Debug.WriteLine($"A {Enum.Parse<ConTypes>(GetType().Name)} is almost at capacity because its {Content / Capacity * 100}% full, there is {Capacity - Content} capacity free");
             }
         }
 
@@ -180,9 +180,16 @@ namespace BucketGame.Models
 
     public class ContainerEvents
     {
+        public static void AddEvents(Container container)
+        {
+            container.Full += Full;
+            container.CapacityOverflowing += CapacityOverflowing;
+            container.CapacityOverflowed += CapacityOverflowed;
+        }
+
         public class ContainerEventArgs : EventArgs
         {
-            public ContainerTypes ContainerType { get; set; }
+            public ConTypes ContainerType { get; set; }
         }
 
         public class CapacityOverflowingEventArgs : ContainerEventArgs

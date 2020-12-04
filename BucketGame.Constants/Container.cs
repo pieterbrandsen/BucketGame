@@ -19,10 +19,20 @@
         public const int OilBarrelCap = 159;
     }
 
-    public enum ContainerTypes
+    public static class ContainerTypes
     {
-        Bucket,
-        RainBarrel,
-        OilBarrel
+        public enum ConTypes {
+            Bucket,
+            RainBarrel,
+            OilBarrel
+        }
+    }
+
+    public static class UnitTesting
+    {
+        public static class CategoryTypes
+        {
+            public const string Constructor = "Constructor";
+        }
     }
 }
