@@ -48,7 +48,7 @@ namespace BucketGame.Models
             if (newContent < 0)
             {
                 // Please don't use negative values in AddContent
-                throw new ArgumentOutOfRangeException();
+                return;
             }
 
             // Bucket has not yet overflowed
@@ -119,7 +119,7 @@ namespace BucketGame.Models
             if (removeContent < 0)
             {
                 // Please don't use negative values in AddContent
-                throw new ArgumentOutOfRangeException();
+                return;
             }
 
             // While inputted content and content is higher then zero, remove content
@@ -158,10 +158,17 @@ namespace BucketGame.Models
             bool isBucketWrongSize = this is Bucket && (newCapacity < BucketMinCap || newCapacity > BucketMaxCap);
             bool isRainBarrelWrongSize = this is RainBarrel && newCapacity != RainBarrelSmall && newCapacity != RainBarrelMedium && newCapacity != RainBarrelLarge;
             bool isOilBarrelWrongSize = this is OilBarrel && newCapacity != OilBarrelCap;
-            if (isBucketWrongSize || isRainBarrelWrongSize || isOilBarrelWrongSize)
+            if (isBucketWrongSize)
             {
-                // Capacity is not right size, please try again.
-                throw new ArgumentOutOfRangeException();
+                newCapacity = BucketDefaultCap;
+            }
+            else if (isRainBarrelWrongSize)
+            {
+                newCapacity = RainBarrelMedium;
+            }
+            else if (isOilBarrelWrongSize)
+            {
+                newCapacity = OilBarrelCap;
             }
 
             capacity = newCapacity;
@@ -173,23 +180,26 @@ namespace BucketGame.Models
 
         public event EventHandler<ContainerEventArgs> Full;
 
-        protected void OnFull(ContainerEventArgs e)
+        protected string OnFull(ContainerEventArgs e)
         {
             Full?.Invoke(this, e);
+            return EventReturnString;
         }
 
         public event EventHandler<CapacityOverflowingEventArgs> CapacityOverflowing;
 
-        protected void OnCapacityOverflowing(CapacityOverflowingEventArgs e)
+        protected string OnCapacityOverflowing(CapacityOverflowingEventArgs e)
         {
             CapacityOverflowing?.Invoke(this, e);
+            return EventReturnString;
         }
 
         public event EventHandler<CapacityOverflowedEventArgs> CapacityOverflowed;
 
-        protected void OnCapacityOverflowed(CapacityOverflowedEventArgs e)
+        protected string OnCapacityOverflowed(CapacityOverflowedEventArgs e)
         {
             CapacityOverflowed?.Invoke(this, e);
+            return EventReturnString;
         }
 
         #endregion
@@ -226,20 +236,13 @@ namespace BucketGame.Models
 
         public static void CapacityOverflowing(object sender, CapacityOverflowingEventArgs e)
         {
-            try
+            Container container = sender as Container;
+            container?.RemoveContent(1);
+
+            // Notify that bucket is overflowing
+            if (!e.DebugMessageSend)
             {
-                Container container = sender as Container;
-                container?.RemoveContent(1);
-                // Notify that bucket is overflowing
-                if (!e.DebugMessageSend)
-                {
-                    Debug.WriteLine($"A {e.ContainerType} is overflowing");
-                }
-            }
-            catch (NullReferenceException exception)
-            {
-                Debug.WriteLine(exception);
-                throw;
+                Debug.WriteLine($"A {e.ContainerType} is overflowing");
             }
         }
 

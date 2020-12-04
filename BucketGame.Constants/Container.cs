@@ -21,11 +21,13 @@
 
     public static class ContainerTypes
     {
-        public enum ConTypes {
+        public enum ConTypes
+        {
             Bucket,
             RainBarrel,
             OilBarrel
         }
+        public static string EventReturnString = "Executed Event";
     }
 
     public static class UnitTesting
@@ -35,6 +37,7 @@
             public const string Constructor = "Constructor";
             public const string Properties = "Properties";
             public const string Methods = "Methods";
+            public const string Events = "Events";
         }
     }
 }
