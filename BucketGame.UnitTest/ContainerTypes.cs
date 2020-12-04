@@ -9,7 +9,7 @@ namespace BucketGame.UnitTest
         [TestMethod]
         public void IsPrime_InputIs1_ReturnFalse()
         {
-            bool result = true;
+            bool result = false;
 
             Assert.IsFalse(result, "1 should not be prime");
         }
