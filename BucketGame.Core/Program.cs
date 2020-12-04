@@ -1,7 +1,6 @@
 ﻿namespace BucketGame.Core
 {
     using System;
-    using Models;
     public class Program
     {
         public static void Main(string[] args)
@@ -24,7 +23,6 @@ ______ _                                                        _
                                                                                __/ |    
                                                                               |___/    
 ");
-
             Console.ReadKey();
         }
     }
