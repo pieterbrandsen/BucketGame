@@ -15,6 +15,7 @@ namespace BucketGame.UnitTest
         public static void AssemblyInit(TestContext context)
         {
             Debug.WriteLine("Started unit testing using MSTest");
+            Debug.WriteLine("Testing all public members/properties");
         }
 
         #region Constructors
@@ -81,7 +82,7 @@ namespace BucketGame.UnitTest
             // If capacity was inputted it should be the same as what container currently has
             if (capacity.HasValue)
             {
-                Assert.AreEqual(capacity, container?.Capacity);
+                Assert.AreEqual(capacity, container?.Capacity, "Input capacity is not equal to containers Capacity");
             }
         }
         #endregion
@@ -98,13 +99,79 @@ namespace BucketGame.UnitTest
             Container container = Activator.CreateInstance(containerType) as Container;
 
             // Check if content and capacity exist on container
-            Assert.IsNotNull(container?.Content);
-            Assert.IsNotNull(container.Capacity);
+            Assert.IsNotNull(container?.Content, "Missing Content on container");
+            Assert.IsNotNull(container.Capacity, "Missing Capacity on container");
 
             // Check if Content/Capacity is higher then zero and Content is not higher then Capacity
-            Assert.IsTrue(container.Content >= 0);
-            Assert.IsTrue(container.Capacity >= 0);
-            Assert.IsTrue(container.Content <= container.Capacity);
+            Assert.IsTrue(container.Content >= 0, "Content is lower then zero");
+            Assert.IsTrue(container.Capacity >= 0, "Capacity is not higher then zero");
+            Assert.IsTrue(container.Content <= container.Capacity, "Content is higher then Capacity");
+        }
+        #endregion
+
+        #region Methods
+        [DataTestMethod]
+        [TestCategory(CategoryTypes.Methods)]
+        [DataRow(typeof(Bucket), typeof(Bucket))]
+        [DataRow(typeof(Bucket), typeof(RainBarrel))]
+        [DataRow(typeof(Bucket), typeof(OilBarrel))]
+        [DataRow(typeof(RainBarrel), typeof(Bucket))]
+        [DataRow(typeof(RainBarrel), typeof(RainBarrel))]
+        [DataRow(typeof(RainBarrel), typeof(OilBarrel))]
+        [DataRow(typeof(OilBarrel), typeof(Bucket))]
+        [DataRow(typeof(OilBarrel), typeof(RainBarrel))]
+        [DataRow(typeof(OilBarrel), typeof(OilBarrel))]
+        public void CheckFillMethodUsingContainer(Type containerType, Type containerType2)
+        {
+            // Create 2 new containers with their type as a container
+            Container targetContainer = Activator.CreateInstance(containerType) as Container;
+            Container container = Activator.CreateInstance(containerType2) as Container;
+
+            // Fill targetContainer using the other container
+            targetContainer?.Fill(container);
+        }
+
+        [DataTestMethod]
+        [TestCategory(CategoryTypes.Methods)]
+        [DataRow(3, typeof(Bucket))]
+        [DataRow(5, typeof(Bucket))]
+        [DataRow(10, typeof(Bucket))]
+        [DataRow(40, typeof(RainBarrel))]
+        [DataRow(80, typeof(RainBarrel))]
+        [DataRow(120, typeof(RainBarrel))]
+        [DataRow(50, typeof(OilBarrel))]
+        [DataRow(100, typeof(OilBarrel))]
+        [DataRow(150, typeof(OilBarrel))]
+        public void CheckFillMethodUsingAmount(int amount, Type containerType)
+        {
+            // Create a new container with the type of containerType
+            Container container = Activator.CreateInstance(containerType) as Container;
+
+            // Check if container is null so it can return that test failed
+            if (container == null)
+            {
+                Assert.Fail("Container was null, please try again");
+            }
+
+            // Set content to Cap / 2 as default content
+            container.Content = container.Capacity / 2;
+
+            // Assign current content to current Content
+            int? preCap = container?.Content;
+            // Fill container using amount
+            container.Fill(amount);
+
+            // If expected content is lower or equal to Capacity
+            if (preCap + amount <= container.Capacity)
+            {
+                // Check if preCap + amount is the same as current Content
+                Assert.AreEqual(preCap + amount, container.Content);
+            }
+            else
+            {
+                // Content should be the same as Capacity because of overflow
+                Assert.AreEqual(container.Content, container.Capacity);
+            }
         }
         #endregion
     }

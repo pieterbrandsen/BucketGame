@@ -34,6 +34,7 @@
         {
             public const string Constructor = "Constructor";
             public const string Properties = "Properties";
+            public const string Methods = "Methods";
         }
     }
 }
