@@ -173,6 +173,50 @@ namespace BucketGame.UnitTest
                 Assert.AreEqual(container.Content, container.Capacity);
             }
         }
+
+        [DataTestMethod]
+        [TestCategory(CategoryTypes.Methods)]
+        [DataRow(3, typeof(Bucket))]
+        [DataRow(5, typeof(Bucket))]
+        [DataRow(10, typeof(Bucket))]
+        [DataRow(40, typeof(RainBarrel))]
+        [DataRow(80, typeof(RainBarrel))]
+        [DataRow(120, typeof(RainBarrel))]
+        [DataRow(50, typeof(OilBarrel))]
+        [DataRow(100, typeof(OilBarrel))]
+        [DataRow(150, typeof(OilBarrel))]
+        public void CheckAddContentMethodUsingAmount(int amount, Type containerType)
+        {
+            // Create a new container with the type of containerType
+            Container container = Activator.CreateInstance(containerType) as Container;
+
+            // Check if container is null so it can return that test failed
+            if (container == null)
+            {
+                Assert.Fail("Container was null, please try again");
+            }
+
+            // Set content to Cap / 2 as default content
+            container.Content = container.Capacity / 2;
+
+            // Assign current content to current Content
+            int? preCap = container?.Content;
+            // AddContent to container using amount
+            container.AddContent(amount);
+
+            // If expected content is lower or equal to Capacity
+            if (preCap + amount <= container.Capacity)
+            {
+                // Check if preCap + amount is the same as current Content
+                Assert.AreEqual(preCap + amount, container.Content);
+            }
+            else
+            {
+                // Content should be the same as Capacity because of overflow
+                Assert.AreEqual(container.Content, container.Capacity);
+            }
+        }
+
         #endregion
     }
 }
