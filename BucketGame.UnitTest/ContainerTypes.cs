@@ -12,7 +12,6 @@ namespace BucketGame.UnitTest
         public void CreateNewBucket()
         {
             Bucket bucket0 = new Bucket();
-            bool result = false;
 
             Assert.IsInstanceOfType(bucket0, typeof(Bucket), "bucket0 is not of type Bucket");
         }
