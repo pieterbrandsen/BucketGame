@@ -3,7 +3,7 @@
     using System;
     public class Program
     {
-        public static void Main(string[] args)
+        private static void WriteText()
         {
             Console.WriteLine(@"
  _   _       _   _     _               _                          _                     
@@ -23,7 +23,16 @@ ______ _                                                        _
                                                                                __/ |    
                                                                               |___/    
 ");
-            Console.ReadKey();
+        }
+
+        public static void Main(string[] args)
+        {
+            while (true)
+            {
+                Console.Clear();
+                WriteText();
+                Console.ReadKey();
+            }
         }
     }
 }

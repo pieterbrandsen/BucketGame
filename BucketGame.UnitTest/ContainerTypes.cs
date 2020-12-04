@@ -1,4 +1,5 @@
 using System;
+using BucketGame.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BucketGame.UnitTest
@@ -6,12 +7,15 @@ namespace BucketGame.UnitTest
     [TestClass]
     public class ContainerTypes
     {
+        #region Constructors
         [TestMethod]
-        public void IsPrime_InputIs1_ReturnFalse()
+        public void CreateNewBucket()
         {
+            Bucket bucket0 = new Bucket();
             bool result = false;
 
-            Assert.IsFalse(result, "1 should not be prime");
+            Assert.IsInstanceOfType(bucket0, typeof(Bucket), "bucket0 is not of type Bucket");
         }
+        #endregion
     }
 }

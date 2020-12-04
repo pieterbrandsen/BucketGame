@@ -10,7 +10,9 @@
     {
         public Bucket()
         {
-            // Empty constructor
+            // Initialize Bucket
+            Capacity = BucketDefaultCap;
+            Content = 0;
         }
 
         public Bucket(int content)
@@ -22,6 +24,7 @@
 
         public Bucket(int content, int capacity)
         {
+            // Initialize Bucket
             Capacity = capacity;
             AddContent(content);
         }
@@ -31,7 +34,9 @@
     {
         public RainBarrel()
         {
-            // Empty constructor
+            // Initialize RainBarrel
+            Capacity = RainBarrelMedium;
+            Content = 0;
         }
 
         public RainBarrel(int content)
@@ -43,6 +48,7 @@
 
         public RainBarrel(int content, int capacity)
         {
+            // Initialize Bucket
             Capacity = capacity;
             AddContent(content);
         }
@@ -52,7 +58,9 @@
     {
         public OilBarrel()
         {
-            // Empty constructor
+            // Initialize OilBarrel
+            Capacity = OilBarrelCap;
+            Content = 0;
         }
 
         public OilBarrel(int content)
@@ -64,6 +72,7 @@
 
         public OilBarrel(int content, int capacity)
         {
+            // Initialize Bucket
             Capacity = capacity;
             AddContent(content);
         }
