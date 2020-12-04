@@ -42,7 +42,7 @@ namespace BucketGame.UnitTest
         [DataRow(10, null, typeof(OilBarrel))]
         public void CreateNewBucket(int? content, int? capacity, Type containerType)
         {
-            // Create undefined bucket variable
+            // Create undefined container variable
             Container container;
 
             // If content is not null
@@ -63,26 +63,48 @@ namespace BucketGame.UnitTest
                 container = Activator.CreateInstance(containerType, content.Value, capacity.Value) as Container;
             }
 
-            // Check if bucket is a type of Bucket and is a type from container
-            Assert.IsInstanceOfType(container, typeof(Container), "bucket is not a type from Container");
+            // Check if bucket is a type of ... and is a type from Container
+            Assert.IsInstanceOfType(container, typeof(Container), $"{container?.GetType().Name} is not a type from Container");
 
             // If input content is lower then bucketCap
             if (content <= container?.Capacity)
             {
-                Assert.AreEqual(content, container.Content, "bucket is not inputted content");
+                Assert.AreEqual(content, container.Content, $"{container.GetType().Name} is not inputted content");
             }
 
-            // Else if this was not the case, the bucket should have overflowed so less then actual content
+            // Else if this was not the case, the container should have overflowed so less then actual content
             else
             {
                 Assert.AreNotEqual(content, container?.Content, "bucket is equal to inputted content");
             }
 
-            // If capacity was inputted it should be the same as what bucket currently has
+            // If capacity was inputted it should be the same as what container currently has
             if (capacity.HasValue)
             {
                 Assert.AreEqual(capacity, container?.Capacity);
             }
+        }
+        #endregion
+
+        #region Properties
+        [DataTestMethod]
+        [TestCategory(CategoryTypes.Properties)]
+        [DataRow(typeof(Bucket))]
+        [DataRow(typeof(RainBarrel))]
+        [DataRow(typeof(OilBarrel))]
+        public void CheckContainerProperties(Type containerType)
+        {
+            // Create a new container with the type of containerType
+            Container container = Activator.CreateInstance(containerType) as Container;
+
+            // Check if content and capacity exist on container
+            Assert.IsNotNull(container?.Content);
+            Assert.IsNotNull(container.Capacity);
+
+            // Check if Content/Capacity is higher then zero and Content is not higher then Capacity
+            Assert.IsTrue(container.Content >= 0);
+            Assert.IsTrue(container.Capacity >= 0);
+            Assert.IsTrue(container.Content <= container.Capacity);
         }
         #endregion
     }

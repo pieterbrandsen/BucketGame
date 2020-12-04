@@ -33,6 +33,7 @@
         public static class CategoryTypes
         {
             public const string Constructor = "Constructor";
+            public const string Properties = "Properties";
         }
     }
 }
