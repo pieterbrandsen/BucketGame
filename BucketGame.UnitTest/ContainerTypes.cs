@@ -157,20 +157,20 @@ namespace BucketGame.UnitTest
             container.Content = container.Capacity / 2;
 
             // Assign current content to current Content
-            int? preCap = container?.Content;
+            int preContent = container.Content;
             // Fill container using amount
             container.Fill(amount);
 
             // If expected content is lower or equal to Capacity
-            if (preCap + amount <= container.Capacity)
+            if (preContent + amount <= container.Capacity)
             {
                 // Check if preCap + amount is the same as current Content
-                Assert.AreEqual(preCap + amount, container.Content);
+                Assert.AreEqual(preContent + amount, container.Content, "preContent + amount is expected to be Content but was not equal to Content");
             }
             else
             {
                 // Content should be the same as Capacity because of overflow
-                Assert.AreEqual(container.Content, container.Capacity);
+                Assert.AreEqual(container.Content, container.Capacity, "Content is expected to be Capacity but was not equal to Capacity");
             }
         }
 
@@ -200,23 +200,65 @@ namespace BucketGame.UnitTest
             container.Content = container.Capacity / 2;
 
             // Assign current content to current Content
-            int? preCap = container?.Content;
+            int preContent = container.Content;
             // AddContent to container using amount
             container.AddContent(amount);
 
             // If expected content is lower or equal to Capacity
-            if (preCap + amount <= container.Capacity)
+            if (preContent + amount <= container.Capacity)
             {
                 // Check if preCap + amount is the same as current Content
-                Assert.AreEqual(preCap + amount, container.Content);
+                Assert.AreEqual(preContent + amount, container.Content, "preContent + amount is expected to be Content but was not equal to Content");
             }
             else
             {
                 // Content should be the same as Capacity because of overflow
-                Assert.AreEqual(container.Content, container.Capacity);
+                Assert.AreEqual(container.Capacity, container.Content, "Content is expected to be Capacity but was not equal to Capacity");
             }
         }
 
+        [DataTestMethod]
+        [TestCategory(CategoryTypes.Methods)]
+        [DataRow(3, typeof(Bucket))]
+        [DataRow(5, typeof(Bucket))]
+        [DataRow(10, typeof(Bucket))]
+        [DataRow(40, typeof(RainBarrel))]
+        [DataRow(80, typeof(RainBarrel))]
+        [DataRow(120, typeof(RainBarrel))]
+        [DataRow(50, typeof(OilBarrel))]
+        [DataRow(100, typeof(OilBarrel))]
+        [DataRow(150, typeof(OilBarrel))]
+        public void CheckRemoveContentMethodUsingAmount(int amount, Type containerType)
+        {
+            // Create a new container with the type of containerType
+            Container container = Activator.CreateInstance(containerType) as Container;
+
+            // Check if container is null so it can return that test failed
+            if (container == null)
+            {
+                Assert.Fail("Container was null, please try again");
+            }
+
+            // Set content to Cap / 2 as default content
+            container.Content = container.Capacity / 2;
+
+            // Assign current content to current Content
+            int preContent = container.Content;
+            // RemoveContent from container using amount
+            container.RemoveContent(amount);
+
+            // If expected content is higher or equal to 0
+            if (preContent - amount >= 0)
+            {
+                // Check if preCap + amount is the same as current Content
+                Assert.AreEqual(preContent - amount, container.Content, "PreContent - amount is expected to be Content but was not equal to Content");
+            }
+            else
+            {
+                // Content should be the same as 0 because the bucket was already empty before removing the rest
+                Assert.AreEqual(0, container.Content, "Content is expected 0 but was not zero");
+            }
+        }
         #endregion
     }
 }

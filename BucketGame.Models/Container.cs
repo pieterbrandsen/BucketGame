@@ -113,7 +113,24 @@ namespace BucketGame.Models
             AddContent(newContent);
         }
 
-        public void RemoveContent(int removeContent) => content -= removeContent;
+        public void RemoveContent(int removeContent)
+        {
+            // If inputted content is lower then zero
+            if (removeContent < 0)
+            {
+                // Please don't use negative values in AddContent
+                throw new ArgumentOutOfRangeException();
+            }
+
+            // While inputted content and content is higher then zero, remove content
+            while (removeContent > 0 && content > 0)
+            {
+                // While newContent has values to add to content, continue
+                content--;
+                removeContent--;
+            }
+        }
+
         public void Fill(int amount)
         {
             // Add amount to bucket
@@ -123,9 +140,9 @@ namespace BucketGame.Models
         public void Fill(Container container)
         {
             // If this is not a bucket but the other container is a bucket
-            if (!(this is Bucket) && container is Bucket)
+            if (!(container is Bucket))
             {
-                Debug.WriteLine("Cant fill a bucket with another type of container then a bucket");
+                Debug.WriteLine($"Cant fill a {GetType().Name} using not a bucket");
                 return;
             }
 
@@ -228,7 +245,7 @@ namespace BucketGame.Models
 
         public static void CapacityOverflowed(object sender, CapacityOverflowedEventArgs e)
         {
-            Debug.WriteLine($"A {e.ContainerType} overflowed and lost {e.LostAmount} content");
+            Debug.WriteLine($"A {e.ContainerType} has overflowed and lost {e.LostAmount} content");
         }
     }
 }
