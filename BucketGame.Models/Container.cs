@@ -48,10 +48,9 @@ namespace BucketGame.Models
         #region Content related
         public void AddContent(int newContent)
         {
-            // If inputted content is lower then zero
+            // If inputted content is lower then zero, return
             if (newContent < 0)
             {
-                // Please don't use negative values in AddContent
                 return;
             }
 
@@ -60,23 +59,18 @@ namespace BucketGame.Models
             int overflowedAmount = 0;
             while (newContent > 0)
             {
-                // While newContent has values to add to content, continue
-                content++;
-                newContent--;
+                content++; newContent--;
 
-                // If this bucket is full
+                // Check if Content is at Capacity, call OnFull event
+                // Else if Content is higher then Capacity, call OnCapacityOverflowing event
                 if (Content == Capacity)
                 {
                     OnFull(new ContainerEventArgs { ContainerType = Enum.Parse<ConTypes>(GetType().Name) });
                 }
-
-                // If Content is higher then Capacity
                 else if (Content > Capacity)
                 {
-                    // Start capacity overflowing
-                    overflowedAmount += 1;
                     OnCapacityOverflowing(new CapacityOverflowingEventArgs { DebugMessageSend = bucketIsOverflowing, ContainerType = Enum.Parse<ConTypes>(GetType().Name) });
-                    bucketIsOverflowing = true;
+                    overflowedAmount += 1; bucketIsOverflowing = true;
                 }
             }
 
