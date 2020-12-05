@@ -140,15 +140,12 @@ namespace BucketGame.UnitTest
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
         [DataRow(3, typeof(Bucket))]
-        [DataRow(5, typeof(Bucket))]
         [DataRow(10, typeof(Bucket))]
         [DataRow(-5, typeof(Bucket))]
         [DataRow(40, typeof(RainBarrel))]
-        [DataRow(80, typeof(RainBarrel))]
         [DataRow(120, typeof(RainBarrel))]
         [DataRow(-5, typeof(RainBarrel))]
         [DataRow(50, typeof(OilBarrel))]
-        [DataRow(100, typeof(OilBarrel))]
         [DataRow(150, typeof(OilBarrel))]
         [DataRow(-5, typeof(OilBarrel))]
         public void CheckFillMethodUsingAmount(int amount, Type containerType)
@@ -193,13 +190,10 @@ namespace BucketGame.UnitTest
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
         [DataRow(3, typeof(Bucket))]
-        [DataRow(5, typeof(Bucket))]
         [DataRow(10, typeof(Bucket))]
         [DataRow(40, typeof(RainBarrel))]
-        [DataRow(80, typeof(RainBarrel))]
         [DataRow(120, typeof(RainBarrel))]
         [DataRow(50, typeof(OilBarrel))]
-        [DataRow(100, typeof(OilBarrel))]
         [DataRow(150, typeof(OilBarrel))]
         public void CheckAddContentMethodUsingAmount(int amount, Type containerType)
         {
@@ -331,12 +325,9 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Events)]
-        [DataRow(ConTypes.Bucket, 10)]
         [DataRow(ConTypes.Bucket, 100)]
-        [DataRow(ConTypes.RainBarrel, 10)]
-        [DataRow(ConTypes.RainBarrel, 100)]
-        [DataRow(ConTypes.OilBarrel, 10)]
-        [DataRow(ConTypes.OilBarrel, 100)]
+        [DataRow(ConTypes.RainBarrel, 80)]
+        [DataRow(ConTypes.OilBarrel, 60)]
         public void CheckCapacityOverflowedEvent(ConTypes containerType, int lostAmount)
         {
             // Create new event args using args
