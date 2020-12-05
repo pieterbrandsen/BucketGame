@@ -11,25 +11,29 @@ namespace BucketGame.Models
     public abstract class Container
     {
         #region Constructors
-        /*
-        public Container()
-        {
-            // Empty constructor
-        }
-
-        public Container(int content)
+        protected Container()
         {
             // Initialize Bucket
+            AddEvents(this);
+            Capacity = BucketDefaultCap;
+            Content = 0;
+        }
+
+        protected Container(int content)
+        {
+            // Initialize Bucket
+            AddEvents(this);
             Capacity = BucketDefaultCap;
             AddContent(content);
         }
 
-        public Container(int content, int capacity)
+        protected Container(int content, int capacity)
         {
+            // Initialize Container
+            AddEvents(this);
             Capacity = capacity;
             AddContent(content);
         }
-        */
 
         #endregion
 
