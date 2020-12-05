@@ -11,26 +11,14 @@
     {
         public Bucket()
         {
-            // Initialize Bucket
-            ContainerEvents.AddEvents(this);
-            Capacity = BucketDefaultCap;
-            Content = 0;
         }
 
-        public Bucket(int content)
+        public Bucket(int content) : base(content)
         {
-            // Initialize Bucket
-            ContainerEvents.AddEvents(this);
-            Capacity = BucketDefaultCap;
-            AddContent(content);
         }
 
-        public Bucket(int content, int capacity)
+        public Bucket(int content, int capacity) : base(content, capacity)
         {
-            // Initialize Bucket
-            ContainerEvents.AddEvents(this);
-            Capacity = capacity;
-            AddContent(content);
         }
     }
 
@@ -38,26 +26,14 @@
     {
         public RainBarrel()
         {
-            // Initialize RainBarrel
-            ContainerEvents.AddEvents(this);
-            Capacity = RainBarrelMedium;
-            Content = 0;
         }
 
-        public RainBarrel(int content)
+        public RainBarrel(int content) : base(content)
         {
-            // Initialize Bucket
-            ContainerEvents.AddEvents(this);
-            Capacity = RainBarrelMedium;
-            AddContent(content);
         }
 
-        public RainBarrel(int content, int capacity)
+        public RainBarrel(int content, int capacity) : base(content, capacity)
         {
-            // Initialize Bucket
-            ContainerEvents.AddEvents(this);
-            Capacity = capacity;
-            AddContent(content);
         }
     }
 
@@ -65,26 +41,14 @@
     {
         public OilBarrel()
         {
-            // Initialize OilBarrel
-            ContainerEvents.AddEvents(this);
-            Capacity = OilBarrelCap;
-            Content = 0;
         }
 
-        public OilBarrel(int content)
+        public OilBarrel(int content) : base(content)
         {
-            // Initialize Bucket
-            ContainerEvents.AddEvents(this);
-            Capacity = OilBarrelCap;
-            AddContent(content);
         }
 
-        public OilBarrel(int content, int capacity)
+        public OilBarrel(int content, int capacity) : base(content, capacity)
         {
-            // Initialize Bucket
-            ContainerEvents.AddEvents(this);
-            Capacity = capacity;
-            AddContent(content);
         }
     }
 }

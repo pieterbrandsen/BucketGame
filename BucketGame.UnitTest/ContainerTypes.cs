@@ -10,11 +10,27 @@ using static BucketGame.Models.ContainerEvents;
 
 namespace BucketGame.UnitTest
 {
+    public class ContainerTypesHelper
+    {
+        public static bool CheckCapacityAndContentWithExpected(int capacity, int content, int preContent, int amount)
+        {
+            // If expected content is lower or equal to Capacity
+            if (preContent + amount <= capacity)
+            {
+                // Check if preCap + amount is the same as current Content
+                return preContent + amount == content;
+            }
+
+            // Content should be the same as Capacity because of overflow
+            return content == capacity;
+        }
+    }
+
     [TestClass]
     public class ContainerTypes : Container
     {
         [AssemblyInitialize]
-        public static void AssemblyInit(TestContext context)
+        public static void AssemblyInit()
         {
             Debug.WriteLine("Started unit testing using MSTest");
             Debug.WriteLine("Testing all public members/properties");
@@ -140,15 +156,12 @@ namespace BucketGame.UnitTest
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
         [DataRow(3, typeof(Bucket))]
-        [DataRow(5, typeof(Bucket))]
         [DataRow(10, typeof(Bucket))]
         [DataRow(-5, typeof(Bucket))]
         [DataRow(40, typeof(RainBarrel))]
-        [DataRow(80, typeof(RainBarrel))]
         [DataRow(120, typeof(RainBarrel))]
         [DataRow(-5, typeof(RainBarrel))]
         [DataRow(50, typeof(OilBarrel))]
-        [DataRow(100, typeof(OilBarrel))]
         [DataRow(150, typeof(OilBarrel))]
         [DataRow(-5, typeof(OilBarrel))]
         public void CheckFillMethodUsingAmount(int amount, Type containerType)
@@ -177,29 +190,17 @@ namespace BucketGame.UnitTest
                 return;
             }
 
-            // If expected content is lower or equal to Capacity
-            if (preContent + amount <= container.Capacity)
-            {
-                // Check if preCap + amount is the same as current Content
-                Assert.AreEqual(preContent + amount, container.Content, "preContent + amount is expected to be Content but was not equal to Content");
-            }
-            else
-            {
-                // Content should be the same as Capacity because of overflow
-                Assert.AreEqual(container.Content, container.Capacity, "Content is expected to be Capacity but was not equal to Capacity");
-            }
+            // Check if Content and Capacity of container is as expected
+            Assert.IsTrue(ContainerTypesHelper.CheckCapacityAndContentWithExpected(container.Capacity, container.Content, preContent, amount));
         }
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
         [DataRow(3, typeof(Bucket))]
-        [DataRow(5, typeof(Bucket))]
         [DataRow(10, typeof(Bucket))]
         [DataRow(40, typeof(RainBarrel))]
-        [DataRow(80, typeof(RainBarrel))]
         [DataRow(120, typeof(RainBarrel))]
         [DataRow(50, typeof(OilBarrel))]
-        [DataRow(100, typeof(OilBarrel))]
         [DataRow(150, typeof(OilBarrel))]
         public void CheckAddContentMethodUsingAmount(int amount, Type containerType)
         {
@@ -220,17 +221,8 @@ namespace BucketGame.UnitTest
             // AddContent to container using amount
             container.AddContent(amount);
 
-            // If expected content is lower or equal to Capacity
-            if (preContent + amount <= container.Capacity)
-            {
-                // Check if preCap + amount is the same as current Content
-                Assert.AreEqual(preContent + amount, container.Content, "preContent + amount is expected to be Content but was not equal to Content");
-            }
-            else
-            {
-                // Content should be the same as Capacity because of overflow
-                Assert.AreEqual(container.Capacity, container.Content, "Content is expected to be Capacity but was not equal to Capacity");
-            }
+            // Check if Content and Capacity of container is as expected
+            Assert.IsTrue(ContainerTypesHelper.CheckCapacityAndContentWithExpected(container.Capacity, container.Content, preContent, amount));
         }
 
         [DataTestMethod]
@@ -331,12 +323,9 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Events)]
-        [DataRow(ConTypes.Bucket, 10)]
         [DataRow(ConTypes.Bucket, 100)]
-        [DataRow(ConTypes.RainBarrel, 10)]
-        [DataRow(ConTypes.RainBarrel, 100)]
-        [DataRow(ConTypes.OilBarrel, 10)]
-        [DataRow(ConTypes.OilBarrel, 100)]
+        [DataRow(ConTypes.RainBarrel, 80)]
+        [DataRow(ConTypes.OilBarrel, 60)]
         public void CheckCapacityOverflowedEvent(ConTypes containerType, int lostAmount)
         {
             // Create new event args using args
