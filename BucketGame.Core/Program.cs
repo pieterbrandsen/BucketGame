@@ -1,20 +1,38 @@
 ﻿namespace BucketGame.Core
 {
     using System;
-    using Models;
     public class Program
     {
+        private static void WriteText()
+        {
+            Console.WriteLine(@"
+ _   _       _   _     _               _                          _                     
+| \ | |     | | | |   (_)             | |                        | |                    
+|  \| | ___ | |_| |__  _ _ __   __ _  | |_ ___    ___  ___  ___  | |__   ___ _ __ ___   
+| . ` |/ _ \| __| '_ \| | '_ \ / _` | | __/ _ \  / __|/ _ \/ _ \ | '_ \ / _ \ '__/ _ \  
+| |\  | (_) | |_| | | | | | | | (_| | | || (_) | \__ \  __/  __/ | | | |  __/ | |  __/_ 
+\_| \_/\___/ \__|_| |_|_|_| |_|\__, |  \__\___/  |___/\___|\___| |_| |_|\___|_|  \___( )
+                                __/ |                                                |/ 
+                               |___/                                                    
+______ _                                                        _                       
+| ___ \ |                                                      | |                      
+| |_/ / | ___  __ _ ___  ___   _ __ ___   _____   _____    __ _| | ___  _ __   __ _     
+|  __/| |/ _ \/ _` / __|/ _ \ | '_ ` _ \ / _ \ \ / / _ \  / _` | |/ _ \| '_ \ / _` |    
+| |   | |  __/ (_| \__ \  __/ | | | | | | (_) \ V /  __/ | (_| | | (_) | | | | (_| |    
+\_|   |_|\___|\__,_|___/\___| |_| |_| |_|\___/ \_/ \___|  \__,_|_|\___/|_| |_|\__, |    
+                                                                               __/ |    
+                                                                              |___/    
+");
+        }
+
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            OilBarrel container = new OilBarrel(12);
-            Bucket container2 = new Bucket(11, 12);
-            container2.Full += ContainerEvents.Full;
-            container2.CapacityOverflowing += ContainerEvents.CapacityOverflowing;
-            container2.CapacityOverflowed += ContainerEvents.CapacityOverflowed;
-            container2.Fill(container);
-
-            Console.ReadLine();
+            while (true)
+            {
+                Console.Clear();
+                WriteText();
+                Console.ReadKey();
+            }
         }
     }
 }

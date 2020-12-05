@@ -1,9 +1,26 @@
 {
-  "“$schema”": null,
-  "https": null, //raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
-  "“settings”": {
-    "“orderingRules”": {
-      "“usingDirectivesPlacement”": "“outsideNamespace”"
+  // ACTION REQUIRED: This file was automatically added to your project, but it
+  // will not take effect until additional steps are taken to enable it. See the
+  // following page for additional information:
+  //
+  // https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/EnableConfiguration.md
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "indentation": {
+      "indentationSize": 6
+    },
+    "spacingRules": {},
+    "readabilityRules": {},
+    "orderingRules": {
+      "systemUsingDirectivesFirst": true,
+      "usingDirectivesPlacement": "outsideNamespace"
+    },
+    "layoutRules": {
+      "newlineAtEndOfFile": "allow"
+    },
+    "maintainabilityRules": {},
+    "namingRules": {
+      "allowCommonHungarianPrefixes": false
     }
   }
 }
