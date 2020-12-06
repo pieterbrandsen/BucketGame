@@ -130,7 +130,7 @@ namespace BucketGame.UnitTest
         [DataRow(typeof(OilBarrel), 2, typeof(Bucket), 9)]
         [DataRow(typeof(OilBarrel), 9, typeof(RainBarrel), RainBarrelLarge)]
         [DataRow(typeof(OilBarrel), 9, typeof(OilBarrel), OilBarrelCap)]
-        public static void CheckFillMethodUsingContainer(Type containerType, int containerAmount, Type containerType2, int container2Amount)
+        public void CheckFillMethodUsingContainer(Type containerType, int containerAmount, Type containerType2, int container2Amount)
         {
             // Create 2 new containers with their type as a container
             Container targetContainer = Activator.CreateInstance(containerType) as Container;
@@ -158,7 +158,7 @@ namespace BucketGame.UnitTest
         [DataRow(50, typeof(OilBarrel))]
         [DataRow(150, typeof(OilBarrel))]
         [DataRow(-5, typeof(OilBarrel))]
-        public static void CheckFillMethodUsingAmount(int amount, Type containerType)
+        public void CheckFillMethodUsingAmount(int amount, Type containerType)
         {
             // Create a new container with the type of containerType
             Container container = Activator.CreateInstance(containerType) as Container;
@@ -190,13 +190,13 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
-        [DataRow(3, typeof(Bucket))]
+        [DataRow(-5, typeof(Bucket))]
         [DataRow(10, typeof(Bucket))]
         [DataRow(40, typeof(RainBarrel))]
-        [DataRow(120, typeof(RainBarrel))]
+        [DataRow(-5, typeof(RainBarrel))]
         [DataRow(50, typeof(OilBarrel))]
         [DataRow(150, typeof(OilBarrel))]
-        public static void CheckAddContentMethodUsingAmount(int amount, Type containerType)
+        public void CheckAddContentMethodUsingAmount(int amount, Type containerType)
         {
             // Create a new container with the type of containerType
             Container container = Activator.CreateInstance(containerType) as Container;
@@ -230,7 +230,7 @@ namespace BucketGame.UnitTest
         [DataRow(50, typeof(OilBarrel))]
         [DataRow(-1, typeof(OilBarrel))]
         [DataRow(150, typeof(OilBarrel))]
-        public static void CheckRemoveContentMethodUsingAmount(int amount, Type containerType)
+        public void CheckRemoveContentMethodUsingAmount(int amount, Type containerType)
         {
             // Create a new container with the type of containerType
             Container container = Activator.CreateInstance(containerType) as Container;
