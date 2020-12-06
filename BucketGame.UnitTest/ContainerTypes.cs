@@ -16,10 +16,16 @@ namespace BucketGame.UnitTest
         public static bool CheckCapacityAndContentWithExpected(int capacity, int content, int preContent, int amount)
         {
             // If expected content is lower or equal to Capacity
-            if (preContent + amount <= capacity)
+            if (preContent + amount <= capacity && amount > 0)
             {
                 // Check if preCap + amount is the same as current Content
                 return preContent + amount == content;
+            }
+
+            // If amount is negative, nothing should have happened so preContent == content
+            if (amount <= 0)
+            {
+                return content == preContent;
             }
 
             // Content should be the same as Capacity because of overflow
