@@ -15,7 +15,12 @@ jobs:
               command: dotnet.exe restore
           - run:
               name: "Run Application Tests"
-              command: dotnet.exe test -v n --results-directory:test_coverage --collect:"XPlat Code Coverage"
+              command: dotnet.exe test
+          - run: 
+              name: Generate coverage report
+              command:
+                cd ./BucketGame.UnitTest/ &&
+                dotnet.exe test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
           - run:
               name: "Print Working Directory"
               command: pwd
