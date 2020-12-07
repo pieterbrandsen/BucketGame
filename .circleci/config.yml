@@ -18,8 +18,8 @@ jobs:
               command: dotnet.exe test
           - run: 
               name: Generate coverage report
-              command:
-                cd ./BucketGame.UnitTest/ &&
+              command: |
+                cd ./BucketGame.UnitTest/
                 dotnet.exe test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
           - run:
               name: "Print Working Directory"
