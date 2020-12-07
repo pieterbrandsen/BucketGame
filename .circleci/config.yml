@@ -15,14 +15,10 @@ jobs:
               command: dotnet.exe restore
           - run:
               name: "Run Application Tests"
-              command: dotnet.exe test -v n --results-directory:test_coverage --collect:"XPlat Code Coverage"
+              command: dotnet.exe test
           - run:
               name: "Print Working Directory"
               command: pwd
-          - store_test_results:
-                path: C:\Users\circleci\project\test_coverage
-          - store_artifacts:
-              path: C:\Users\circleci\project\test_coverage
     build:
         description: Build application with Release configuration
         executor:
