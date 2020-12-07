@@ -218,6 +218,7 @@ namespace BucketGame.Models
             container.CapacityOverflowed += CapacityOverflowed;
         }
 
+        #region Event Args
         public class ContainerEventArgs : EventArgs
         {
             public ConTypes ContainerType { get; set; }
@@ -232,7 +233,9 @@ namespace BucketGame.Models
         {
             public int LostAmount { get; set; }
         }
+        #endregion
 
+        #region Event Methods
         public static void Full(object sender, ContainerEventArgs e)
         {
             Debug.WriteLine($"A {e.ContainerType} is full, please empty that bucket before it overflows");
@@ -254,5 +257,6 @@ namespace BucketGame.Models
         {
             Debug.WriteLine($"A {e.ContainerType} has overflowed and lost {e.LostAmount} content");
         }
+        #endregion
     }
 }
