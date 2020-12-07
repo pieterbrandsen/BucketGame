@@ -16,7 +16,7 @@ jobs:
         with:
            dotnet-version: 3.0.100
       - name: Generate coverage report
-        run: |
+        run:
           cd ./BucketGame/BucketGame.UnitTest/
           dotnet.exe test -v n /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
       - name: Publish coverage report to coveralls.io
