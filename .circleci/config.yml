@@ -25,7 +25,7 @@ jobs:
               name: "Print Working Directory"
               command: pwd
           - store_test_results:
-                path: C:\Users\circleci\project\BucketGame.UnitTest\TestResults
+                path: C:\Users\circleci\project\BucketGame.UnitTest\TestResults/coverage.json
           - store_artifacts:
               path: C:\Users\circleci\project\BucketGame.UnitTest\TestResults
     build:
