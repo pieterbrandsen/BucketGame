@@ -20,7 +20,7 @@ jobs:
               name: Generate coverage report
               command: |
                 cd ./BucketGame.UnitTest/
-                dotnet.exe test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+                dotnet.exe test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ --collect:"xplat Code Coverage"
           - run:
               name: "Print Working Directory"
               command: pwd
