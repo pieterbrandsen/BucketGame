@@ -16,18 +16,9 @@ jobs:
           - run:
               name: "Run Application Tests"
               command: dotnet.exe test
-          - run: 
-              name: Generate coverage report
-              command: |
-                cd ./BucketGame.UnitTest/
-                dotnet.exe test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ --collect:"xplat Code Coverage"
           - run:
               name: "Print Working Directory"
               command: pwd
-          - store_test_results:
-                path: C:\Users\circleci\project\BucketGame.UnitTest\TestResults/coverage.json
-          - store_artifacts:
-              path: C:\Users\circleci\project\BucketGame.UnitTest\TestResults
     build:
         description: Build application with Release configuration
         executor:
