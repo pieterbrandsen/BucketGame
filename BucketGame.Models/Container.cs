@@ -153,7 +153,23 @@ namespace BucketGame.Models
             // Fill this bucket using another bucket
             AddContent(container);
         }
+
+        public void Empty()
+        {
+            // Set content to zero
+            Content = 0;
+        }
+
+        public void Empty(int amount)
+        {
+            while (Content > 0 && amount > 0)
+            {
+                // Remove from both one
+                Content--; amount--;
+            }
+        }
         #endregion
+
         #region Capacity
         private void OverwriteCapacity(int newCapacity)
         {

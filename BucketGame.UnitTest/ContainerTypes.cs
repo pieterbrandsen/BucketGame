@@ -274,6 +274,53 @@ namespace BucketGame.UnitTest
                 Assert.AreEqual(0, container.Content, "Content is expected 0 but was not zero");
             }
         }
+
+        [DataTestMethod]
+        [TestCategory(CategoryTypes.Methods)]
+        [DataRow(typeof(Bucket))]
+        [DataRow(typeof(RainBarrel))]
+        [DataRow(typeof(OilBarrel))]
+        public void CheckEmptyMethod(Type containerType)
+        {
+            // Create a new container with the type of containerType
+            Container container = Activator.CreateInstance(containerType) as Container;
+
+            // Check if container is null so it can return that test failed
+            if (container == null)
+            {
+                Assert.Fail("Container was null, please try again");
+            }
+
+            // Empty container
+            container.Empty();
+
+            // Check after draining if Content == 0
+            Assert.AreEqual(0, container.Content);
+        }
+
+        [DataTestMethod]
+        [TestCategory(CategoryTypes.Methods)]
+        [DataRow(50, typeof(Bucket))]
+        [DataRow(-1, typeof(RainBarrel))]
+        [DataRow(150, typeof(OilBarrel))]
+        public void CheckEmptyMethodUsingAmount(int amount, Type containerType)
+        {
+            // Create a new container with the type of containerType
+            Container container = Activator.CreateInstance(containerType) as Container;
+
+            // Check if container is null so it can return that test failed
+            if (container == null)
+            {
+                Assert.Fail("Container was null, please try again");
+            }
+
+            // Empty container
+            int preContent = container.Content;
+            container.Empty(amount);
+
+            // Check after draining if Content == 0
+            Assert.IsTrue(ContainerTypesHelper.CheckCapacityAndContentWithExpected(container.Capacity, container.Content, preContent, amount));
+        }
         #endregion
 
         #region Events
