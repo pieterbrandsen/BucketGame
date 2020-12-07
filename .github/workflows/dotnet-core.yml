@@ -16,7 +16,8 @@ jobs:
         with:
            dotnet-version: 3.0.100
       - name: Install project dependencies
-        run: dotnet restore
+        run: 
+            dotnet restore
       - name: Generate coverage report
         run:
           cd ./BucketGame.UnitTest/ &&
