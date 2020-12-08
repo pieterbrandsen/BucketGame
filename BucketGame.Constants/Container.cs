@@ -46,7 +46,7 @@ namespace BucketGame.Constants
 
         public static class Data
         {
-            public const int DataCount = 10;
+            public const int DataCount = 10*1000;
             public const int MinNumber = -100;
             public const int MaxNumber = 500;
         }
