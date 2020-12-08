@@ -1,4 +1,7 @@
-﻿namespace BucketGame.Constants
+﻿using System;
+using System.Collections.Generic;
+
+namespace BucketGame.Constants
 {
     public static class Bucket
     {
@@ -39,6 +42,13 @@
             public const string Properties = "Properties";
             public const string Methods = "Methods";
             public const string Events = "Events";
+        }
+
+        public static class Data
+        {
+            public const int DataCount = 10;
+            public const int MinNumber = -100;
+            public const int MaxNumber = 500;
         }
     }
 }

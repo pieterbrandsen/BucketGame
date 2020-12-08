@@ -14,26 +14,20 @@ namespace BucketGame.Models
         protected Container()
         {
             // Initialize Bucket
-            AddEvents(this);
-            Capacity = BucketDefaultCap;
-            Content = 0;
+            AddEvents(this); Capacity = 0; Content = 0;
         }
 
-        protected Container(int content)
+        protected Container(int content, int capacity = 0) : this()
         {
             // Initialize Bucket
-            AddEvents(this);
-            Capacity = BucketDefaultCap;
-            AddContent(content);
-        }
-
-        protected Container(int content, int capacity)
-        {
-            // Initialize Container
-            AddEvents(this);
             Capacity = capacity;
             AddContent(content);
         }
+
+        //protected Container(int content, int capacity) : this(content, capacity)
+        //{
+        //    Capacity = capacity;
+        //}
 
         #endregion
 

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using BucketGame.Helpers;
 using BucketGame.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static BucketGame.Constants.ContainerTypes;
@@ -13,13 +14,52 @@ namespace BucketGame.UnitTest
 {
     public static class ContainerTypesHelper
     {
-        public static bool CheckCapacityAndContentWithExpected(int capacity, int content, int preContent, int amount)
+        public static bool CheckCapacityAndContentWithExpected(int capacity, int content, int preContent, int amount, string method = "fill")
         {
+            switch (method)
+            {
+                case "fill":
+                    // If expected content is lower or equal to Capacity
+                    if (preContent + amount <= capacity && amount > 0)
+                    {
+                        // Check if preCap + amount is the same as current Content
+                        return preContent + amount == content;
+                    }
+
+                    // If amount is negative, nothing should have happened so preContent == content
+                    if (amount <= 0)
+                    {
+                        return content == preContent;
+                    }
+
+                    // Content should be the same as Capacity because of overflow
+                    return content == capacity;
+                case "empty":
+
+                    // If expected content is lower or equal to Capacity
+                    if (preContent - amount > 0 && amount > 0)
+                    {
+                        // Check if preCap + amount is the same as current Content
+                        return preContent - amount == content;
+                    }
+
+                    // If amount is negative, nothing should have happened so preContent == content
+                    if (amount <= 0)
+                    {
+                        return content == preContent;
+                    }
+
+                    // Content should be the same as Capacity because of overflow
+                    return content == 0;
+                default:
+                    break;
+            }
+
             // If expected content is lower or equal to Capacity
-            if (preContent + amount <= capacity && amount > 0)
+            if (amount <= capacity && amount > 0)
             {
                 // Check if preCap + amount is the same as current Content
-                return preContent + amount == content;
+                return preContent == content;
             }
 
             // If amount is negative, nothing should have happened so preContent == content
@@ -39,29 +79,7 @@ namespace BucketGame.UnitTest
         #region Constructors
         [DataTestMethod]
         [TestCategory(CategoryTypes.Constructor)]
-        // Bucket
-        [DataRow(null, null, typeof(Bucket))]
-        [DataRow(12, 8, typeof(Bucket))]
-        [DataRow(15, 15, typeof(Bucket))]
-        [DataRow(13, 12, typeof(Bucket))]
-        [DataRow(12, 200, typeof(Bucket))]
-        [DataRow(15, null, typeof(Bucket))]
-
-        // RainBarrel
-        [DataRow(null, null, typeof(RainBarrel))]
-        [DataRow(50, RainBarrelSmall, typeof(RainBarrel))]
-        [DataRow(130, RainBarrelMedium, typeof(RainBarrel))]
-        [DataRow(200, RainBarrelLarge, typeof(RainBarrel))]
-        [DataRow(200, 200, typeof(RainBarrel))]
-        [DataRow(100, null, typeof(RainBarrel))]
-
-        // OilBarrel
-        [DataRow(null, null, typeof(OilBarrel))]
-        [DataRow(50, OilBarrelCap, typeof(OilBarrel))]
-        [DataRow(200, OilBarrelCap, typeof(OilBarrel))]
-        [DataRow(80, 500, typeof(OilBarrel))]
-        [DataRow(1000, null, typeof(OilBarrel))]
-        [DataRow(10, null, typeof(OilBarrel))]
+        [DynamicData(nameof(DataGenerator.GetRandom_Number_Number_Types), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CreateNewBucket(int? content, int? capacity, Type containerType)
         {
             // Create undefined container variable
@@ -88,26 +106,17 @@ namespace BucketGame.UnitTest
             // Check if bucket is a type of ... and is a type from Container
             Assert.IsInstanceOfType(container, typeof(Container), $"{container?.GetType().Name} is not a type from Container");
 
-            // If input content is lower then bucketCap
-            if (content <= container?.Capacity)
-            {
-                Assert.AreEqual(content, container.Content, $"{container.GetType().Name} is not inputted content");
-            }
+            int preContent = container.Content;
 
-            // Else if this was not the case, the container should have overflowed so less then actual content
-            else
-            {
-                Assert.AreNotEqual(content, container?.Content, $"{container?.GetType().Name} is equal to inputted content");
-            }
+            // Check if Content and Capacity of container is as expected
+            Assert.IsTrue(ContainerTypesHelper.CheckCapacityAndContentWithExpected(container.Capacity, container.Content, preContent, content ?? 0, "none"));
         }
         #endregion
 
         #region Properties
         [DataTestMethod]
         [TestCategory(CategoryTypes.Properties)]
-        [DataRow(typeof(Bucket))]
-        [DataRow(typeof(RainBarrel))]
-        [DataRow(typeof(OilBarrel))]
+        [DynamicData(nameof(DataGenerator.GetRandomTypes), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckContainerProperties(Type containerType)
         {
             // Create a new container with the type of containerType
@@ -127,15 +136,7 @@ namespace BucketGame.UnitTest
         #region Methods
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
-        [DataRow(typeof(Bucket), 5, typeof(Bucket), 12)]
-        [DataRow(typeof(Bucket), 10, typeof(RainBarrel), RainBarrelSmall)]
-        [DataRow(typeof(Bucket), 50, typeof(OilBarrel), OilBarrelCap)]
-        [DataRow(typeof(RainBarrel), 100, typeof(Bucket), 10)]
-        [DataRow(typeof(RainBarrel), 60, typeof(RainBarrel), RainBarrelMedium)]
-        [DataRow(typeof(RainBarrel), 50, typeof(OilBarrel), OilBarrelCap)]
-        [DataRow(typeof(OilBarrel), 2, typeof(Bucket), 9)]
-        [DataRow(typeof(OilBarrel), 9, typeof(RainBarrel), RainBarrelLarge)]
-        [DataRow(typeof(OilBarrel), 9, typeof(OilBarrel), OilBarrelCap)]
+        [DynamicData(nameof(DataGenerator.GetRandom_Types_Number_Types_Number), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckFillMethodUsingContainer(Type containerType, int containerAmount, Type containerType2, int container2Amount)
         {
             // Create 2 new containers with their type as a container
@@ -151,19 +152,14 @@ namespace BucketGame.UnitTest
 
             // Fill targetContainer using the other container
             targetContainer?.Fill(container);
+
+            Assert.IsNotNull(container);
+            Assert.IsNotNull(targetContainer);
         }
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
-        [DataRow(3, typeof(Bucket))]
-        [DataRow(10, typeof(Bucket))]
-        [DataRow(-5, typeof(Bucket))]
-        [DataRow(40, typeof(RainBarrel))]
-        [DataRow(120, typeof(RainBarrel))]
-        [DataRow(-5, typeof(RainBarrel))]
-        [DataRow(50, typeof(OilBarrel))]
-        [DataRow(150, typeof(OilBarrel))]
-        [DataRow(-5, typeof(OilBarrel))]
+        [DynamicData(nameof(DataGenerator.GetRandom_Number_Types), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckFillMethodUsingAmount(int amount, Type containerType)
         {
             // Create a new container with the type of containerType
@@ -196,12 +192,7 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
-        [DataRow(-5, typeof(Bucket))]
-        [DataRow(10, typeof(Bucket))]
-        [DataRow(40, typeof(RainBarrel))]
-        [DataRow(-5, typeof(RainBarrel))]
-        [DataRow(50, typeof(OilBarrel))]
-        [DataRow(150, typeof(OilBarrel))]
+        [DynamicData(nameof(DataGenerator.GetRandom_Number_Types), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckAddContentMethodUsingAmount(int amount, Type containerType)
         {
             // Create a new container with the type of containerType
@@ -227,15 +218,7 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
-        [DataRow(3, typeof(Bucket))]
-        [DataRow(-1, typeof(Bucket))]
-        [DataRow(10, typeof(Bucket))]
-        [DataRow(40, typeof(RainBarrel))]
-        [DataRow(-1, typeof(RainBarrel))]
-        [DataRow(120, typeof(RainBarrel))]
-        [DataRow(50, typeof(OilBarrel))]
-        [DataRow(-1, typeof(OilBarrel))]
-        [DataRow(150, typeof(OilBarrel))]
+        [DynamicData(nameof(DataGenerator.GetRandom_Number_Types), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckRemoveContentMethodUsingAmount(int amount, Type containerType)
         {
             // Create a new container with the type of containerType
@@ -277,9 +260,7 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
-        [DataRow(typeof(Bucket))]
-        [DataRow(typeof(RainBarrel))]
-        [DataRow(typeof(OilBarrel))]
+        [DynamicData(nameof(DataGenerator.GetRandomTypes), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckEmptyMethod(Type containerType)
         {
             // Create a new container with the type of containerType
@@ -300,9 +281,7 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Methods)]
-        [DataRow(50, typeof(Bucket))]
-        [DataRow(-1, typeof(RainBarrel))]
-        [DataRow(150, typeof(OilBarrel))]
+        [DynamicData(nameof(DataGenerator.GetRandom_Number_Types), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckEmptyMethodUsingAmount(int amount, Type containerType)
         {
             // Create a new container with the type of containerType
@@ -314,21 +293,22 @@ namespace BucketGame.UnitTest
                 Assert.Fail("Container was null, please try again");
             }
 
+            // Set content to Cap / 2 as default content
+            container.Content = container.Capacity / 2;
+
             // Empty container
             int preContent = container.Content;
             container.Empty(amount);
 
             // Check after draining if Content == 0
-            Assert.IsTrue(ContainerTypesHelper.CheckCapacityAndContentWithExpected(container.Capacity, container.Content, preContent, amount));
+            Assert.IsTrue(ContainerTypesHelper.CheckCapacityAndContentWithExpected(container.Capacity, container.Content, preContent, amount, "empty"));
         }
         #endregion
 
         #region Events
         [DataTestMethod]
         [TestCategory(CategoryTypes.Events)]
-        [DataRow(ConTypes.Bucket)]
-        [DataRow(ConTypes.RainBarrel)]
-        [DataRow(ConTypes.OilBarrel)]
+        [DynamicData(nameof(DataGenerator.GetRandom_ConTypes), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckFullEvent(ConTypes containerType)
         {
             // Create new event args using args
@@ -340,12 +320,7 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Events)]
-        [DataRow(true, typeof(Bucket), ConTypes.Bucket)]
-        [DataRow(false, typeof(Bucket), ConTypes.Bucket)]
-        [DataRow(true, typeof(RainBarrel), ConTypes.RainBarrel)]
-        [DataRow(false, typeof(RainBarrel), ConTypes.RainBarrel)]
-        [DataRow(true, typeof(OilBarrel), ConTypes.OilBarrel)]
-        [DataRow(false, typeof(OilBarrel), ConTypes.OilBarrel)]
+        [DynamicData(nameof(DataGenerator.GetRandom_Type_ConTypes), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckCapacityOverflowingEvent(bool debugMessageSend, Type containerType, ConTypes containerTypeEnum)
         {
             // Create a new container with the type of containerType
@@ -370,9 +345,7 @@ namespace BucketGame.UnitTest
 
         [DataTestMethod]
         [TestCategory(CategoryTypes.Events)]
-        [DataRow(ConTypes.Bucket, 100)]
-        [DataRow(ConTypes.RainBarrel, 80)]
-        [DataRow(ConTypes.OilBarrel, 60)]
+        [DynamicData(nameof(DataGenerator.GetRandom_ConTypes_Number), typeof(DataGenerator), DynamicDataSourceType.Method)]
         public void CheckCapacityOverflowedEvent(ConTypes containerType, int lostAmount)
         {
             // Create new event args using args

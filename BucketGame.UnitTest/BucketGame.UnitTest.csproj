@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BucketGame.Constants\BucketGame.Constants.csproj" />
+    <ProjectReference Include="..\BucketGame.Helpers\BucketGame.Helpers.csproj" />
     <ProjectReference Include="..\BucketGame.Models\BucketGame.Models.csproj" />
   </ItemGroup>
 
