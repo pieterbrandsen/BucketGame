@@ -9,17 +9,17 @@ namespace BucketGame.Helpers
     public static class DataGenerator
     {
         private static readonly Random rnd;
-        private static readonly List<object[]> list;
+        private static List<object[]> list;
         private static readonly Type[] types = { typeof(Bucket), typeof(RainBarrel), typeof(OilBarrel) };
         private static readonly ConTypes[] conTypes = { ConTypes.Bucket, ConTypes.RainBarrel, ConTypes.OilBarrel };
         static DataGenerator()
         {
             rnd = new Random();
-            list = new List<object[]>();
         }
 
         private static void RunLoop(params object[] parameters)
         {
+            list = new List<object[]>();
             for (int i = DataCount; i > 0; i--)
             {
                 list.Add(parameters);
